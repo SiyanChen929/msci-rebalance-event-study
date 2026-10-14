@@ -1,0 +1,53 @@
+{
+  "specification_status": "frozen_mechanism_extension_after_simple_gate_pass",
+  "created_local_date": "2026-09-01",
+  "base_strategy": "impact_proxy_top10",
+  "entry_proxy": "open of the 15:49 start-stamped minute bar",
+  "exit_proxy": "close of the 15:50 start-stamped minute bar",
+  "information_cutoff": "15:47:59.999 America/New_York",
+  "execution_buffer": "one full minute between the final feature bar and the 15:49 entry proxy",
+  "primary_filter": "down_to_small_hour_confirmation",
+  "primary_definition": "retain all additions and true Standard exits; require expected-direction relative one-hour momentum for down-to-small deletions",
+  "candidate_rules": [
+    "baseline_all",
+    "same_clock_day_rvol_above_one",
+    "same_clock_hour_rvol_above_one",
+    "relative_hour_momentum_same_clock_rvol",
+    "down_to_small_hour_confirmation",
+    "down_to_small_day_confirmation",
+    "deletion_relative_hour_confirmation",
+    "deletion_relative_day_confirmation"
+  ],
+  "market_day_absolute_return_threshold": 0.0075,
+  "weighting": "retain frozen Top-10 weights, scale only the larger surviving leg down to preserve dollar neutrality, never redistribute above the original 10% name cap",
+  "missing_feature_policy": "fail_closed_for_the_rule_requiring_the_feature",
+  "costs_bps": [0.0, 10.0],
+  "primary_metric": "mean net return per scheduled review at 10 bp",
+  "secondary_metrics": [
+    "active review hit rate",
+    "net return retention versus baseline",
+    "gross exposure coverage",
+    "event Sharpe",
+    "maximum drawdown"
+  ],
+  "inference_unit": "MSCI implementation close",
+  "familywise_control": "four-review block sign-flip max-t across the mechanism-extension family",
+  "walk_forward": {
+    "minimum_training_reviews": 8,
+    "selection_cost_bps": 10.0,
+    "objective": "highest historical mean net return per scheduled review",
+    "minimum_active_training_reviews": 3,
+    "minimum_gross_exposure_ratio_to_baseline": 0.35,
+    "tie_breakers": [
+      "higher active review hit rate",
+      "lexicographically smaller rule name"
+    ]
+  },
+  "retrospective_split": {
+    "train_through": "2023-11-30",
+    "test_from": "2024-02-29",
+    "warning": "post-first-pass exploratory extension, not an untouched holdout"
+  },
+  "tight_cutoff_sensitivity": "not applicable to the migration-aware primary rule",
+  "future_validation": "only a rule meeting the predeclared hit-rate and return-retention constraints may be frozen for the next eight reviews"
+}

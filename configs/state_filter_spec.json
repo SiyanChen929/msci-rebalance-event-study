@@ -1,0 +1,67 @@
+{
+  "specification_status": "frozen_before_first_state_filter_return_run",
+  "created_local_date": "2026-09-01",
+  "base_strategy": "impact_proxy_top10",
+  "entry_proxy": "open of the 15:49 start-stamped minute bar",
+  "exit_proxy": "close of the 15:50 start-stamped minute bar",
+  "information_cutoff": "15:47:59.999 America/New_York",
+  "execution_buffer": "one full minute between the final feature bar and the 15:49 entry proxy",
+  "primary_filter": "relative_hour_momentum",
+  "primary_definition": "keep additions outperforming SPY and deletions underperforming SPY from the 14:48 bar open through the 15:47 bar close",
+  "candidate_rules": [
+    "baseline_all",
+    "stock_day_momentum",
+    "stock_day_reversal",
+    "stock_hour_momentum",
+    "stock_hour_reversal",
+    "stock_week_momentum",
+    "stock_week_reversal",
+    "relative_day_momentum",
+    "relative_day_reversal",
+    "relative_hour_momentum",
+    "relative_hour_reversal",
+    "relative_week_momentum",
+    "relative_week_reversal",
+    "volume_above_side_median",
+    "last_hour_volume_share_above_side_median",
+    "intraday_volatility_above_side_median",
+    "relative_hour_momentum_high_volume",
+    "relative_day_momentum_high_volume",
+    "calm_market_day",
+    "stressed_market_day"
+  ],
+  "market_day_absolute_return_threshold": 0.0075,
+  "weighting": "retain frozen Top-10 weights, then scale the larger surviving leg down so long and short notionals match; never exceed the original 10% name cap; hold residual cash",
+  "missing_feature_policy": "fail_closed_for_the_rule_requiring_the_feature",
+  "costs_bps": [0.0, 10.0],
+  "primary_metric": "mean net return per scheduled review at 10 bp",
+  "secondary_metrics": [
+    "active review hit rate",
+    "scheduled review hit rate",
+    "mean net return per active review",
+    "gross exposure coverage",
+    "event Sharpe annualized by sqrt(4)",
+    "maximum drawdown",
+    "four-review moving-block bootstrap mean interval"
+  ],
+  "inference_unit": "MSCI implementation close",
+  "familywise_control": "four-review block sign-flip max-t across all non-baseline fixed rules",
+  "walk_forward": {
+    "minimum_training_reviews": 8,
+    "selection_cost_bps": 10.0,
+    "objective": "highest historical mean net return per scheduled review",
+    "minimum_active_training_reviews": 3,
+    "minimum_gross_exposure_ratio_to_baseline": 0.35,
+    "tie_breakers": [
+      "higher active review hit rate",
+      "lexicographically smaller rule name"
+    ]
+  },
+  "retrospective_split": {
+    "train_through": "2023-11-30",
+    "test_from": "2024-02-29",
+    "warning": "this is a historical split, not a genuine untouched holdout, because the research question was formed after the full sample existed"
+  },
+  "tight_cutoff_sensitivity": "repeat the primary rule through the 15:48 bar close only as a research sensitivity; it is not treated as an executable 15:49-open fill",
+  "future_validation": "freeze the chosen rule and evaluate the next eight MSCI reviews sequentially without threshold changes"
+}

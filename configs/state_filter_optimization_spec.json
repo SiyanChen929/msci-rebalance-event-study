@@ -1,0 +1,65 @@
+{
+  "specification_status": "frozen_before_first_soft_gate_optimization_run",
+  "created_local_date": "2026-09-01",
+  "research_status": "retrospective_optimization_future_holdout_unconsumed",
+  "base_strategy": "impact_proxy_top10",
+  "entry_proxy": "open of the 15:49 start-stamped minute bar",
+  "exit_proxy": "close of the 15:50 start-stamped minute bar",
+  "information_cutoff": "15:47:59.999 America/New_York",
+  "execution_buffer": "one full minute between final feature bar and 15:49 entry proxy",
+  "primary_mechanism": "down-to-small deletion confirmation using direction-signed stock-minus-SPY return from 14:48 open through 15:47 close",
+  "candidate_rules": [
+    "baseline_all",
+    "down_to_small_hour_soft_075",
+    "down_to_small_hour_soft_050",
+    "down_to_small_hour_soft_025",
+    "down_to_small_hour_confirmation",
+    "down_to_small_hour_or_day_confirmation",
+    "down_to_small_hour_and_day_confirmation"
+  ],
+  "optimization_rules": [
+    "baseline_all",
+    "down_to_small_hour_soft_075",
+    "down_to_small_hour_soft_050",
+    "down_to_small_hour_soft_025",
+    "down_to_small_hour_confirmation"
+  ],
+  "rule_intervention_rank": {
+    "baseline_all": 0,
+    "down_to_small_hour_soft_075": 1,
+    "down_to_small_hour_soft_050": 2,
+    "down_to_small_hour_soft_025": 3,
+    "down_to_small_hour_confirmation": 4
+  },
+  "candidate_family_rationale": "one-dimensional soft attenuation of the already identified weak down-to-small deletion leg; day/hour conjunctions are diagnostics and cannot be selected by the primary optimizer",
+  "weighting": "multiply only unconfirmed down-to-small deletion weights by the declared retention fraction, then scale only the larger surviving leg down to dollar neutrality; never raise any name above its original 10 percent cap",
+  "missing_feature_policy": "fail closed for every non-baseline rule",
+  "costs_bps": [0.0, 5.0, 10.0, 15.0, 20.0],
+  "primary_cost_bps": 10.0,
+  "inference_unit": "MSCI implementation close",
+  "familywise_control": "four-review block sign-flip max-t across all six non-baseline fixed rules",
+  "walk_forward": {
+    "minimum_training_reviews": 8,
+    "selection_policy": "constrained_minimum_intervention",
+    "minimum_active_training_reviews": 3,
+    "minimum_net_return_retention_vs_baseline": 0.80,
+    "minimum_active_hit_rate_improvement": 0.05,
+    "minimum_gross_exposure_ratio_to_baseline": 0.35,
+    "nonpositive_baseline_policy": "candidate training net return must be positive and no worse than baseline",
+    "selection_tie_breaker": "lowest intervention rank then lexicographic rule name",
+    "fallback": "baseline_all"
+  },
+  "robustness": {
+    "leave_one_review_out_rule_stability": true,
+    "regimes": ["2020-2022", "2023-plus", "excluding-2026"],
+    "manual_reconstruction_tolerance": 1e-12,
+    "no_purging_needed_reason": "quarterly event labels are non-overlapping one-minute windows; chronological expanding folds remain mandatory"
+  },
+  "future_holdout": {
+    "reviews": 8,
+    "status": "untouched",
+    "start": "first official MSCI implementation close after 2026-08-31",
+    "parameter_changes_allowed": false,
+    "primary_comparison": "optimized challenger versus matched baseline at 10 bp"
+  }
+}

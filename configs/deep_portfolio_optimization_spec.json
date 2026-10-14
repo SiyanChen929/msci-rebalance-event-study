@@ -1,0 +1,92 @@
+{
+  "specification_status": "frozen_before_first_deep_portfolio_run",
+  "created_local_date": "2026-09-02",
+  "research_status": "retrospective_optimization_future_holdout_unconsumed",
+  "objective": "Improve portfolio construction while holding the existing minute-bar return proxy fixed",
+  "inputs": {
+    "feature_panel": "outputs/baseline/flow_weighting_feature_panel.csv",
+    "frozen_top10_ledger": "outputs/baseline/topn_capped10_trade_log.csv",
+    "beta_features": "outputs/portfolio_variants/portfolio_variant_beta_features.csv",
+    "state_features": "outputs/state_filter_extension/state_filter_feature_panel.csv",
+    "review_schedule": "outputs/baseline/topn_capped10_date_trade_log.csv"
+  },
+  "research_clock": {
+    "information_cutoff": "15:47:59.999 America/New_York for state variables; prior close for daily variables",
+    "entry_proxy": "open of the 15:49 start-stamped minute bar",
+    "exit_proxy": "close of the 15:50 start-stamped minute bar",
+    "execution_assumption": "fixed minute-bar return proxy; fill probability is out of scope for this optimization"
+  },
+  "ranking_score": "daily_log_volatility_20d * sqrt(proxy_flow_pressure)",
+  "minimum_names_per_side": 3,
+  "costs_bps": [0.0, 5.0, 10.0, 15.0, 20.0],
+  "primary_cost_bps": 10.0,
+  "baseline": "baseline_top10_cap10_dollar_neutral",
+  "candidate_order": [
+    "baseline_top10_cap10_dollar_neutral",
+    "top10_full_equal_dollar_neutral",
+    "top6_full_equal_dollar_neutral",
+    "top20_full_equal_dollar_neutral",
+    "top6_impact_weighted_dollar_neutral",
+    "top10_impact_weighted_dollar_neutral",
+    "top10_inverse_vol_dollar_neutral",
+    "dynamic80_impact_weighted_dollar_neutral",
+    "top10_stock_beta_neutral",
+    "top10_long2_short1_unhedged",
+    "top10_long2_short1_spy_hedged",
+    "top10_long_only_spy_hedged",
+    "top10_equal_soft_beta_band_spy_hedged",
+    "top10_down_to_small_softgate25",
+    "top10_relative_hour_reversal",
+    "top10_quiet_hour",
+    "top10_reversal_or_quiet"
+  ],
+  "candidate_roles": {
+    "baseline_top10_cap10_dollar_neutral": "frozen research control",
+    "top10_full_equal_dollar_neutral": "capital utilization",
+    "top6_full_equal_dollar_neutral": "concentration and breadth",
+    "top20_full_equal_dollar_neutral": "diversification and breadth",
+    "top6_impact_weighted_dollar_neutral": "concentrated proxy-impact weighting",
+    "top10_impact_weighted_dollar_neutral": "proxy-impact weighting",
+    "top10_inverse_vol_dollar_neutral": "risk scaling",
+    "dynamic80_impact_weighted_dollar_neutral": "variable breadth",
+    "top10_stock_beta_neutral": "stock-leg beta constraint",
+    "top10_long2_short1_unhedged": "leg asymmetry",
+    "top10_long2_short1_spy_hedged": "leg asymmetry with market hedge",
+    "top10_long_only_spy_hedged": "addition-leg isolation with market hedge",
+    "top10_equal_soft_beta_band_spy_hedged": "soft beta constraint",
+    "top10_down_to_small_softgate25": "previously frozen state overlay",
+    "top10_relative_hour_reversal": "post-hoc mechanism diagnostic",
+    "top10_quiet_hour": "post-hoc mechanism diagnostic",
+    "top10_reversal_or_quiet": "post-hoc mechanism diagnostic"
+  },
+  "portfolio_controls": {
+    "gross_target": 1.0,
+    "baseline_max_name_weight": 0.10,
+    "optimized_max_name_weight": 0.20,
+    "asymmetric_max_name_weight": 0.25,
+    "long_heavy_long_fraction": 0.6666666666666666,
+    "soft_beta_band": 0.10,
+    "dynamic_score_coverage": 0.80,
+    "dynamic_max_names_per_side": 10
+  },
+  "walk_forward": {
+    "minimum_training_reviews": 8,
+    "minimum_active_training_reviews": 3,
+    "minimum_exposure_ratio_to_baseline": 0.50,
+    "selection_score": "scheduled mean net return minus 0.5 standard error",
+    "fallback": "baseline_top10_cap10_dollar_neutral"
+  },
+  "inference": {
+    "independent_unit": "MSCI implementation close",
+    "paired_comparator": "baseline_top10_cap10_dollar_neutral",
+    "block_size_reviews": 4,
+    "familywise_control": "exact four-review block sign-flip max-t across all 16 challengers",
+    "regimes": ["2020-2022", "2023-plus", "excluding-2026", "2024-plus"]
+  },
+  "future_holdout": {
+    "reviews": 8,
+    "status": "untouched",
+    "start": "first official MSCI implementation close after 2026-08-31",
+    "parameter_changes_allowed": false
+  }
+}
